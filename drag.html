@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singapore Food Drag & Drop Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #d32f2f;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .game-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+        
+        .game-info {
+            margin-bottom: 15px;
+            padding: 8px;
+            background-color: #ffebee;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .target-dish {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+        
+        .target-dish-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #d32f2f;
+            margin-bottom: 15px;
+            display: inline-block;
+            object-fit: cover;
+        }
+        
+        .ingredients-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+        }
+        
+        .ingredient {
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            touch-action: none;
+        }
+        
+        .ingredient:hover, .ingredient:active, .ingredient.touched {
+            transform: scale(1.1);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ingredient span {
+            font-size: 30px;
+            line-height: 50px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ingredient-name {
+            font-size: 10px;
+            text-align: center;
+            margin-top: 3px;
+        }
+        
+        .bowl-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 0 auto 15px;
+        }
+        
+        .bowl {
+            width: 150px;
+            height: 150px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            border: 4px solid #8d6e63;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .bowl-ingredients {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            top: 15px;
+            left: 15px;
+        }
+        
+        .bowl-ingredient {
+            width: 30px;
+            height: 30px;
+            margin: 2px;
+            font-size: 20px;
+            line-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+        
+        .bowl-list-container {
+            width: 200px;
+            margin-left: 15px;
+            padding: 8px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .bowl-list-container h3 {
+            font-size: 14px;
+            color: #8d6e63;
+            margin: 0 0 5px 0;
+        }
+        
+        .bowl-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            min-height: 20px;
+        }
+        
+        .bowl-list li {
+            padding: 2px 8px;
+            margin: 2px 0;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .bowl-list li button {
+            background-color: #e57373;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 14px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #b71c1c;
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        #hint-button {
+            background-color: #ff9800;
+        }
+        
+        #hint-button:hover {
+            background-color: #f57c00;
+        }
+        
+        .hint-highlight {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 152, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+        }
+        
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            min-height: 25px;
+        }
+        
+        .correct {
+            color: #4caf50;
+        }
+        
+        .incorrect {
+            color: #f44336;
+        }
+        
+        .score {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .ingredient-info {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            max-width: 90%;
+            font-size: 14px;
+        }
+        
+        .close-info {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .info-button {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            width: 18px;
+            height: 18px;
+            background-color: #2196f3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .game-end-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: none;
+        }
+
+        .game-end-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 201;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            display: none;
+        }
+
+        .game-end-popup h2 {
+            font-size: 24px;
+            color: #4caf50;
+            margin: 0 0 15px;
+        }
+
+        .game-end-popup img {
+            width: 200px;
+            height: auto;
+            margin: 15px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .game-end-popup button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .game-end-popup button:hover {
+            background-color: #b71c1c;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+            
+            .game-info {
+                font-size: 12px;
+                padding: 6px;
+            }
+            
+            .target-dish {
+                font-size: 16px;
+            }
+            
+            .target-dish-img {
+                width: 100px;
+                height: 100px;
+                border: 2px solid #d32f2f;
+            }
+            
+            .ingredients-area {
+                gap: 8px;
+                padding: 8px;
+            }
+            
+            .ingredient {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .ingredient span {
+                font-size: 24px;
+                line-height: 40px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .ingredient-name {
+                font-size: 8px;
+            }
+            
+            .bowl-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .bowl {
+                width: 120px;
+                height: 120px;
+                border: 3px solid #8d6e63;
+            }
+            
+            .bowl-ingredients {
+                width: 96px;
+                height: 96px;
+                top: 12px;
+                left: 12px;
+            }
+            
+            .bowl-ingredient {
+                width: 24px;
+                height: 24px;
+                font-size: 16px;
+                line-height: 24px;
+                margin: 1px;
+            }
+            
+            .bowl-list-container {
+                width: 90%;
+                margin-left: 0;
+                margin-top: 10px;
+                padding: 6px;
+                max-height: 120px;
+            }
+            
+            .bowl-list-container h3 {
+                font-size: 12px;
+            }
+            
+            .bowl-list li {
+                font-size: 10px;
+                padding: 1px 6px;
+            }
+            
+            .bowl-list li button {
+                width: 16px;
+                height: 16px;
+                font-size: 8px;
+            }
+            
+            .controls {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+            
+            .result {
+                font-size: 16px;
+            }
+            
+            .score {
+                font-size: 14px;
+            }
+            
+            .ingredient-info {
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .close-info {
+                font-size: 14px;
+            }
+            
+            .info-button {
+                width: 16px;
+                height: 16px;
+                font-size: 10px;
+            }
+
+            .game-end-popup {
+                padding: 15px;
+                max-width: 300px;
+            }
+
+            .game-end-popup h2 {
+                font-size: 20px;
+            }
+
+            .game-end-popup img {
+                width: 150px;
+            }
+
+            .game-end-popup button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Singapore Food Drag & Drop Game</h1>
+        
+        <div class="game-info">
+            <div>Drag the correct ingredients into the bowl to make the target dish!</div>
+            <div>Tap an ingredient to learn more or use the hint button if stuck.</div>
+        </div>
+        
+        <div class="target-dish">Make: <span id="current-dish">Laksa</span></div>
+        <img id="dish-image" class="target-dish-img" src="" alt="">
+        
+        <div class="ingredients-area" id="ingredients">
+            <!-- Ingredients will be dynamically added here -->
+        </div>
+        
+        <div class="bowl-container">
+            <div class="bowl" id="bowl">
+                <div class="bowl-ingredients" id="bowl-ingredients"></div>
+            </div>
+            <div class="bowl-list-container">
+                <h3>Ingredients in Bowl:</h3>
+                <ul id="bowl-list" class="bowl-list"></ul>
+            </div>
+        </div>
+        
+        <div class="result" id="result"></div>
+        <div class="hint" id="hint-display" style="color: #ff9800; font-style: italic; margin: 10px 0; min-height: 20px;"></div>
+        
+        <div class="controls">
+            <button id="check-button">Check Recipe</button>
+            <button id="clear-button">Clear Bowl</button>
+            <button id="hint-button">Get Hint</button>
+        </div>
+        
+        <div class="score">Score: <span id="score">0</span>/30</div>
+    </div>
+    
+    <div class="ingredient-info" id="ingredient-info">
+        <span class="close-info" id="close-info">×</span>
+        <h3 id="info-name"></h3>
+        <p id="info-description"></p>
+    </div>
+
+    <div class="game-end-overlay" id="game-end-overlay"></div>
+    <div class="game-end-popup" id="game-end-popup">
+        <h2>Congrats you finished the game! 🎉</h2>
+        <img src="cheeringcat.gif" alt="Cheering Cat">
+        <button id="close-popup">Close</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game data
+            const singaporeFoods = [
+                {
+                    name: "Laksa",
+                    image: "Laksa.jpg",
+                    ingredients: ["noodles", "coconut milk", "shrimp", "tofu", "chili"],
+                    description: "A spicy noodle soup with a rich coconut curry broth, typically topped with seafood, bean sprouts, and herbs."
+                },
+                {
+                    name: "Nasi Lemak",
+                    image: "https://via.placeholder.com/1276x1280?text=Nasi+Lemak",
+                    ingredients: ["coconut rice", "sambal", "anchovies", "cucumber", "boiled egg"],
+                    description: "A fragrant rice dish cooked in coconut milk, served with spicy sambal, crispy anchovies, cucumber, and boiled egg."
+                },
+                {
+                    name: "Masala Thosai",
+                    image: "https://via.placeholder.com/1276x1280?text=Masala+Thosai",
+                    ingredients: ["rice flour", "urad dal", "potato", "onion", "curry leaves"],
+                    description: "A crispy South Indian fermented crepe filled with a spiced potato and onion filling, often served with chutney."
+                }
+            ];
+            
+            const allIngredients = [
+                { name: "noodles", image: "🍜", description: "Rice or egg noodles, the base for laksa's flavorful broth." },
+                { name: "coconut milk", image: "🥥", description: "Adds richness and creaminess to laksa and nasi lemak." },
+                { name: "shrimp", image: "🦐", description: "Fresh shrimp adds seafood flavor to laksa." },
+                { name: "tofu", image: "🧀", description: "Soft or firm tofu absorbs laksa's spicy broth." },
+                { name: "chili", image: "🌶️", description: "Adds spiciness to laksa and sambal for nasi lemak." },
+                { name: "coconut rice", image: "🍚", description: "Rice cooked with coconut milk and pandan for nasi lemak." },
+                { name: "sambal", image: "🌶️", description: "A spicy chili paste, essential for nasi lemak." },
+                { name: "anchovies", image: "🐟", description: "Crispy fried anchovies add crunch to nasi lemak." },
+                { name: "cucumber", image: "🥒", description: "Fresh cucumber slices provide a cooling contrast in nasi lemak." },
+                { name: "boiled egg", image: "🥚", description: "Hard-boiled egg, a classic nasi lemak accompaniment." },
+                { name: "rice flour", image: "🥯", description: "Key ingredient for the batter of masala thosai." },
+                { name: "urad dal", image: "🌾", description: "Split black gram lentils, used in masala thosai batter." },
+                { name: "potato", image: "🥔", description: "Spiced mashed potato filling for masala thosai." },
+                { name: "onion", image: "🧅", description: "Adds flavor to the masala thosai filling." },
+                { name: "curry leaves", image: "🌿", description: "Aromatic leaves used in masala thosai's spiced filling." }
+            ];
+            
+            // Game variables
+            let currentDishIndex = 0;
+            let score = 0;
+            let bowlIngredients = [];
+            
+            // DOM elements
+            const ingredientsContainer = document.getElementById('ingredients');
+            const bowl = document.getElementById('bowl');
+            const bowlIngredientsContainer = document.getElementById('bowl-ingredients');
+            const bowlListElement = document.getElementById('bowl-list');
+            const currentDishElement = document.getElementById('current-dish');
+            const dishImageElement = document.getElementById('dish-image');
+            const resultElement = document.getElementById('result');
+            const hintDisplayElement = document.getElementById('hint-display');
+            const scoreElement = document.getElementById('score');
+            const checkButton = document.getElementById('check-button');
+            const clearButton = document.getElementById('clear-button');
+            const hintButton = document.getElementById('hint-button');
+            const ingredientInfo = document.getElementById('ingredient-info');
+            const infoName = document.getElementById('info-name');
+            const infoDescription = document.getElementById('info-description');
+            const closeInfo = document.getElementById('close-info');
+            const gameEndOverlay = document.getElementById('game-end-overlay');
+            const gameEndPopup = document.getElementById('game-end-popup');
+            const closePopupButton = document.getElementById('close-popup');
+            
+            // Initialize the game
+            function initGame() {
+                updateTargetDish();
+                populateIngredients();
+                addEventListeners();
+            }
+            
+            // Update the target dish display
+            function updateTargetDish() {
+                const currentDish = singaporeFoods[currentDishIndex];
+                currentDishElement.textContent = currentDish.name;
+                dishImageElement.src = currentDish.image;
+                dishImageElement.alt = currentDish.name;
+            }
+            
+            // Add all ingredients to the ingredients area
+            function populateIngredients() {
+                ingredientsContainer.innerHTML = '';
+                
+                // Add all ingredients in random order
+                const shuffledIngredients = [...allIngredients].sort(() => Math.random() - 0.5);
+                
+                shuffledIngredients.forEach(ingredient => {
+                    const ingredientElement = document.createElement('div');
+                    ingredientElement.className = 'ingredient';
+                    ingredientElement.setAttribute('data-name', ingredient.name);
+                    ingredientElement.draggable = true;
+                    
+                    const emojiElement = document.createElement('span');
+                    emojiElement.textContent = ingredient.image;
+                    
+                    const nameElement = document.createElement('div');
+                    nameElement.className = 'ingredient-name';
+                    nameElement.textContent = ingredient.name;
+                    
+                    const infoButton = document.createElement('div');
+                    infoButton.className = 'info-button';
+                    infoButton.textContent = 'i';
+                    
+                    ingredientElement.appendChild(emojiElement);
+                    ingredientElement.appendChild(nameElement);
+                    ingredientElement.appendChild(infoButton);
+                    ingredientsContainer.appendChild(ingredientElement);
+                    
+                    // Drag event listeners
+                    ingredientElement.addEventListener('dragstart', function(e) {
+                        e.dataTransfer.setData('text/plain', ingredient.name);
+                        e.dataTransfer.effectAllowed = 'move';
+                    });
+                    
+                    // Touch event listeners
+                    ingredientElement.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        ingredientElement.classList.add('touched');
+                        ingredientElement._touchData = { name: ingredient.name };
+                    });
+                    
+                    ingredientElement.addEventListener('touchmove', function(e) {
+                        e.preventDefault();
+                        // Visual feedback only, no repositioning
+                        ingredientElement.classList.add('touched');
+                    });
+                    
+                    ingredientElement.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        ingredientElement.classList.remove('touched');
+                        handleTouchDrop(e, ingredientElement._touchData.name);
+                    });
+                    
+                    // Info button event listener
+                    infoButton.addEventListener('click', function(e) {
+                        showIngredientInfo(e, ingredient);
+                        e.stopPropagation();
+                    });
+                });
+            }
+            
+            // Add all necessary event listeners
+            function addEventListeners() {
+                bowl.addEventListener('dragover', dragOver);
+                bowl.addEventListener('drop', drop);
+                
+                // Button click events
+                checkButton.addEventListener('click', checkRecipe);
+                clearButton.addEventListener('click', clearBowl);
+                hintButton.addEventListener('click', showHint);
+                
+                // Close info popup event
+                closeInfo.addEventListener('click', function() {
+                    ingredientInfo.style.display = 'none';
+                });
+
+                // Close game end popup event
+                closePopupButton.addEventListener('click', function() {
+                    gameEndOverlay.style.display = 'none';
+                    gameEndPopup.style.display = 'none';
+                    resetGame();
+                });
+            }
+            
+            // Drag and drop functions
+            function dragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            }
+            
+            function drop(e) {
+                e.preventDefault();
+                const ingredientName = e.dataTransfer.getData('text/plain');
+                addIngredientToBowl(ingredientName);
+            }
+            
+            // Handle touch drop
+            function handleTouchDrop(e, ingredientName) {
+                const touch = e.changedTouches[0];
+                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+                
+                if (dropTarget && bowl.contains(dropTarget)) {
+                    addIngredientToBowl(ingredientName);
+                }
+            }
+            
+            // Add ingredient to bowl
+            function addIngredientToBowl(ingredientName) {
+                if (!bowlIngredients.includes(ingredientName)) {
+                    bowlIngredients.push(ingredientName);
+                    updateBowlDisplay();
+                    resultElement.textContent = '';
+                    resultElement.className = 'result';
+                }
+            }
+            
+            // Update the display of ingredients in the bowl
+            function updateBowlDisplay() {
+                bowlIngredientsContainer.innerHTML = '';
+                bowlListElement.innerHTML = '';
+                
+                if (bowlIngredients.length === 0) {
+                    const emptyMessage = document.createElement('li');
+                    emptyMessage.textContent = 'No ingredients added yet';
+                    emptyMessage.style.fontStyle = 'italic';
+                    emptyMessage.style.color = '#888';
+                    emptyMessage.style.textAlign = 'center';
+                    bowlListElement.appendChild(emptyMessage);
+                } else {
+                    bowlIngredients.forEach((ingredientName, index) => {
+                        const ingredient = allIngredients.find(ing => ing.name === ingredientName);
+                        if (ingredient) {
+                            const emojiElement = document.createElement('span');
+                            emojiElement.className = 'bowl-ingredient';
+                            emojiElement.textContent = ingredient.image;
+                            emojiElement.setAttribute('data-index', index);
+                            emojiElement.draggable = true;
+                            
+                            emojiElement.addEventListener('dragstart', function(e) {
+                                e.dataTransfer.setData('text/plain', ingredient.name);
+                                e.dataTransfer.effectAllowed = 'move';
+                            });
+                            
+                            emojiElement.addEventListener('touchstart', function(e) {
+                                e.preventDefault();
+                                emojiElement.classList.add('touched');
+                                emojiElement._touchData = { name: ingredient.name };
+                            });
+                            
+                            emojiElement.addEventListener('touchmove', function(e) {
+                                e.preventDefault();
+                                emojiElement.classList.add('touched');
+                            });
+                            
+                            emojiElement.addEventListener('touchend', function(e) {
+                                e.preventDefault();
+                                emojiElement.classList.remove('touched');
+                                handleTouchDrop(e, emojiElement._touchData.name);
+                            });
+                            
+                            bowlIngredientsContainer.appendChild(emojiElement);
+                            
+                            const listItem = document.createElement('li');
+                            const textSpan = document.createElement('span');
+                            textSpan.textContent = ingredient.name;
+                            listItem.appendChild(textSpan);
+                            
+                            const removeButton = document.createElement('button');
+                            removeButton.textContent = '×';
+                            removeButton.title = 'Remove ingredient';
+                            removeButton.addEventListener('click', function() {
+                                removeIngredient(index);
+                            });
+                            listItem.appendChild(removeButton);
+                            
+                            bowlListElement.appendChild(listItem);
+                        }
+                    });
+                }
+            }
+            
+            // Remove ingredient by index
+            function removeIngredient(index) {
+                if (index >= 0 && index < bowlIngredients.length) {
+                    bowlIngredients.splice(index, 1);
+                    updateBowlDisplay();
+                    resultElement.textContent = '';
+                    resultElement.className = 'result';
+                }
+            }
+            
+            // Check if the recipe is correct
+            function checkRecipe() {
+                const currentDish = singaporeFoods[currentDishIndex];
+                const requiredIngredients = currentDish.ingredients;
+                
+                if (bowlIngredients.length !== requiredIngredients.length) {
+                    resultElement.textContent = "Not quite right. Try again!";
+                    resultElement.className = 'result incorrect';
+                    return;
+                }
+                
+                // Sort both arrays and compare
+                const sortedBowlIngredients = [...bowlIngredients].sort();
+                const sortedRequiredIngredients = [...requiredIngredients].sort();
+                
+                const isCorrect = JSON.stringify(sortedBowlIngredients) === JSON.stringify(sortedRequiredIngredients);
+                
+                if (isCorrect) {
+                    score += 10;
+                    console.log(`Score updated to: ${score}`); // Debug log
+                    scoreElement.textContent = score;
+                    resultElement.textContent = `Correct! You've made ${currentDish.name}!`;
+                    resultElement.className = 'result correct';
+                    
+                    if (score >= 30) {
+                        showGameEndPopup();
+                    } else {
+                        // Automatically move to next dish after 2 seconds
+                        setTimeout(() => {
+                            nextDish();
+                        }, 2000);
+                    }
+                } else {
+                    resultElement.textContent = "Not quite right. Try again!";
+                    resultElement.className = 'result incorrect';
+                }
+            }
+            
+            // Show game end popup
+            function showGameEndPopup() {
+                gameEndOverlay.style.display = 'block';
+                gameEndPopup.style.display = 'block';
+            }
+            
+            // Reset the game
+            function resetGame() {
+                score = 0;
+                scoreElement.textContent = score;
+                currentDishIndex = 0;
+                bowlIngredients = [];
+                updateTargetDish();
+                updateBowlDisplay();
+                resultElement.textContent = '';
+                resultElement.className = 'result';
+                hintDisplayElement.textContent = '';
+                removeAllHighlights();
+                populateIngredients();
+            }
+            
+            // Clear all ingredients from the bowl
+            function clearBowl() {
+                bowlIngredients = [];
+                updateBowlDisplay();
+                resultElement.textContent = '';
+                resultElement.className = 'result';
+                hintDisplayElement.textContent = '';
+                removeAllHighlights();
+            }
+            
+            // Move to the next dish
+            function nextDish() {
+                clearBowl();
+                currentDishIndex = (currentDishIndex + 1) % singaporeFoods.length;
+                updateTargetDish();
+                hintDisplayElement.textContent = '';
+                removeAllHighlights();
+            }
+            
+            // Show hint for the current dish
+            function showHint() {
+                const currentDish = singaporeFoods[currentDishIndex];
+                const requiredIngredients = currentDish.ingredients;
+                
+                removeAllHighlights();
+                
+                const numHints = Math.min(Math.floor(Math.random() * 2) + 2, requiredIngredients.length);
+                const shuffledIngredients = [...requiredIngredients].sort(() => Math.random() - 0.5);
+                const hintsToShow = shuffledIngredients.slice(0, numHints);
+                
+                hintDisplayElement.textContent = `Hint: This dish contains ${hintsToShow.join(', ')}${numHints < requiredIngredients.length ? ' and other ingredients' : ''}.`;
+                
+                hintsToShow.forEach(ingredientName => {
+                    const ingredientElements = document.querySelectorAll(`.ingredient[data-name="${ingredientName}"]`);
+                    ingredientElements.forEach(el => {
+                        el.classList.add('hint-highlight');
+                    });
+                });
+                
+                setTimeout(removeAllHighlights, 3000);
+            }
+            
+            // Remove all hint highlights
+            function removeAllHighlights() {
+                document.querySelectorAll('.hint-highlight').forEach(el => {
+                    el.classList.remove('hint-highlight');
+                });
+            }
+            
+            // Show ingredient information
+            function showIngredientInfo(e, ingredient) {
+                if (!ingredient) {
+                    const ingredientElement = e.target.closest('.ingredient');
+                    if (!ingredientElement) return;
+                    
+                    const ingredientName = ingredientElement.getAttribute('data-name');
+                    ingredient = allIngredients.find(ing => ing.name === ingredientName);
+                }
+                
+                if (ingredient) {
+                    infoName.textContent = ingredient.name;
+                    infoDescription.textContent = ingredient.description;
+                    ingredientInfo.style.display = 'block';
+                }
+            }
+            
+            // Initialize the game
+            initGame();
+        });
+    </script>
+</body>
+</html>
