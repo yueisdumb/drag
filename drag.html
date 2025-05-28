@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +38,7 @@
         }
         
         .target-dish {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
             color: #d32f2f;
             margin-bottom: 10px;
@@ -85,14 +86,11 @@
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
         }
         
-        .ingredient span {
-            font-size: 30px;
-            line-height: 50px;
+        .ingredient img {
             width: 50px;
             height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            object-fit: cover;
+            border-radius: 4px;
         }
         
         .ingredient-name {
@@ -142,6 +140,13 @@
             align-items: center;
             justify-content: center;
             touch-action: none;
+        }
+        
+        .bowl-ingredient img {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 4px;
         }
         
         .bowl-list-container {
@@ -272,6 +277,7 @@
             z-index: 100;
             max-width: 90%;
             font-size: 14px;
+            display: none;
         }
         
         .close-info {
@@ -366,7 +372,7 @@
             }
             
             .target-dish {
-                font-size: 16px;
+                font-size: 14px;
             }
             
             .target-dish-img {
@@ -385,9 +391,7 @@
                 height: 50px;
             }
             
-            .ingredient span {
-                font-size: 24px;
-                line-height: 40px;
+            .ingredient img {
                 width: 40px;
                 height: 40px;
             }
@@ -417,9 +421,11 @@
             .bowl-ingredient {
                 width: 24px;
                 height: 24px;
-                font-size: 16px;
-                line-height: 24px;
-                margin: 1px;
+            }
+            
+            .bowl-ingredient img {
+                width: 24px;
+                height: 24px;
             }
             
             .bowl-list-container {
@@ -556,39 +562,37 @@
                 {
                     name: "Laksa",
                     image: "Laksa.jpg",
-                    ingredients: ["noodles", "coconut milk", "shrimp", "tofu", "chili"],
-                    description: "A spicy noodle soup with a rich coconut curry broth, typically topped with seafood, bean sprouts, and herbs."
+                    ingredients: ["laksa leaf", "boiled egg", "beehoon", "cockle", "prawn"],
+                    description: "A spicy noodle soup with coconut curry broth, featuring laksa leaf, beehoon, cockles, prawns, and boiled egg."
                 },
                 {
                     name: "Nasi Lemak",
-                    image: "https://via.placeholder.com/1276x1280?text=Nasi+Lemak",
-                    ingredients: ["coconut rice", "sambal", "anchovies", "cucumber", "boiled egg"],
-                    description: "A fragrant rice dish cooked in coconut milk, served with spicy sambal, crispy anchovies, cucumber, and boiled egg."
+                    image: "NasiLemak.jpg",
+                    ingredients: ["peanut", "sambal", "fried chicken", "cucumber", "rice"],
+                    description: "A fragrant rice dish served with spicy sambal, roasted peanuts, crispy fried chicken, and cucumber slices."
                 },
                 {
                     name: "Masala Thosai",
-                    image: "https://via.placeholder.com/1276x1280?text=Masala+Thosai",
-                    ingredients: ["rice flour", "urad dal", "potato", "onion", "curry leaves"],
-                    description: "A crispy South Indian fermented crepe filled with a spiced potato and onion filling, often served with chutney."
+                    image: "MasalaThosai.jpg",
+                    ingredients: ["potato", "chutney", "sambar"],
+                    description: "A crispy South Indian crepe filled with spiced potato, served with chutney and sambar."
                 }
             ];
             
             const allIngredients = [
-                { name: "noodles", image: "🍜", description: "Rice or egg noodles, the base for laksa's flavorful broth." },
-                { name: "coconut milk", image: "🥥", description: "Adds richness and creaminess to laksa and nasi lemak." },
-                { name: "shrimp", image: "🦐", description: "Fresh shrimp adds seafood flavor to laksa." },
-                { name: "tofu", image: "🧀", description: "Soft or firm tofu absorbs laksa's spicy broth." },
-                { name: "chili", image: "🌶️", description: "Adds spiciness to laksa and sambal for nasi lemak." },
-                { name: "coconut rice", image: "🍚", description: "Rice cooked with coconut milk and pandan for nasi lemak." },
-                { name: "sambal", image: "🌶️", description: "A spicy chili paste, essential for nasi lemak." },
-                { name: "anchovies", image: "🐟", description: "Crispy fried anchovies add crunch to nasi lemak." },
-                { name: "cucumber", image: "🥒", description: "Fresh cucumber slices provide a cooling contrast in nasi lemak." },
-                { name: "boiled egg", image: "🥚", description: "Hard-boiled egg, a classic nasi lemak accompaniment." },
-                { name: "rice flour", image: "🥯", description: "Key ingredient for the batter of masala thosai." },
-                { name: "urad dal", image: "🌾", description: "Split black gram lentils, used in masala thosai batter." },
-                { name: "potato", image: "🥔", description: "Spiced mashed potato filling for masala thosai." },
-                { name: "onion", image: "🧅", description: "Adds flavor to the masala thosai filling." },
-                { name: "curry leaves", image: "🌿", description: "Aromatic leaves used in masala thosai's spiced filling." }
+                { name: "laksa leaf", image: "LaksaLeaf.jpg", description: "Aromatic herb adding unique flavor." },
+                { name: "boiled egg", image: "BoiledEgg.jpg", description: "Freshly boiled egg, sliced to perfection." },
+                { name: "beehoon", image: "Beehoon.jpg", description: "Thin rice noodles." },
+                { name: "Tau pok", image: "TauPok.jpg", description: "Fried beancurd puff." },
+                { name: "prawn", image: "Prawn.jpg", description: "Fresh prawns." },
+                { name: "peanut", image: "Peanut.jpg", description: "Roasted peanuts." },
+                { name: "sambal", image: "Sambal.jpg", description: "Spicy chili paste." },
+                { name: "fried chicken", image: "FriedChicken.jpg", description: "Crispy fried chicken, a hearty component." },
+                { name: "cucumber", image: "Cucumber.jpg", description: "Fresh cucumber slices." },
+                { name: "rice", image: "Rice.jpg", description: "Fragrant rice." },
+                { name: "potato filling", image: "Potato.jpg", description: "Spiced mashed potato filling." },
+                { name: "chutney", image: "Chutney.jpg", description: "Flavorful condiment." },
+                { name: "sambar", image: "Sambar.jpg", description: "Lentil-based stew, a staple side." }
             ];
             
             // Game variables
@@ -622,6 +626,12 @@
                 updateTargetDish();
                 populateIngredients();
                 addEventListeners();
+                ingredientInfo.style.display = 'none';
+                // Fallback for dish images
+                dishImageElement.onerror = function() {
+                    this.src = 'placeholder.jpg';
+                    this.alt = 'Image not available';
+                };
             }
             
             // Update the target dish display
@@ -630,23 +640,58 @@
                 currentDishElement.textContent = currentDish.name;
                 dishImageElement.src = currentDish.image;
                 dishImageElement.alt = currentDish.name;
+                populateIngredients();
             }
             
-            // Add all ingredients to the ingredients area
+            // Add ingredients to the ingredients area
             function populateIngredients() {
                 ingredientsContainer.innerHTML = '';
+                const currentDish = singaporeFoods[currentDishIndex];
+                const correctIngredients = currentDish.ingredients;
                 
-                // Add all ingredients in random order
-                const shuffledIngredients = [...allIngredients].sort(() => Math.random() - 0.5);
+                // Get incorrect ingredients from other dishes
+                let otherIngredients = [];
+                singaporeFoods.forEach((dish, index) => {
+                    if (index !== currentDishIndex) {
+                        dish.ingredients.forEach(ing => {
+                            if (!correctIngredients.includes(ing) && !otherIngredients.includes(ing)) {
+                                otherIngredients.push(ing);
+                            }
+                        });
+                    }
+                });
                 
-                shuffledIngredients.forEach(ingredient => {
+                // Determine number of incorrect ingredients based on dish
+                const isMasalaThosai = currentDish.name === "Masala Thosai";
+                const numIncorrect = isMasalaThosai ? 5 : 3;
+                
+                // Randomly select incorrect ingredients
+                const shuffledOtherIngredients = otherIngredients.sort(() => Math.random() - 0.5);
+                const incorrectIngredients = shuffledOtherIngredients.slice(0, numIncorrect);
+                
+                // Combine correct and incorrect ingredients
+                const selectedIngredients = [...correctIngredients, ...incorrectIngredients];
+                
+                // Get full ingredient objects and randomize display order
+                const displayIngredients = selectedIngredients
+                    .map(name => allIngredients.find(ing => ing.name === name))
+                    .filter(ing => ing)
+                    .sort(() => Math.random() - 0.5);
+                
+                // Populate ingredients area
+                displayIngredients.forEach(ingredient => {
                     const ingredientElement = document.createElement('div');
                     ingredientElement.className = 'ingredient';
                     ingredientElement.setAttribute('data-name', ingredient.name);
                     ingredientElement.draggable = true;
                     
-                    const emojiElement = document.createElement('span');
-                    emojiElement.textContent = ingredient.image;
+                    const imgElement = document.createElement('img');
+                    imgElement.src = ingredient.image;
+                    imgElement.alt = ingredient.name;
+                    imgElement.onerror = function() {
+                        this.src = 'placeholder.jpg'; // Fallback image
+                        this.alt = 'Ingredient image not available';
+                    };
                     
                     const nameElement = document.createElement('div');
                     nameElement.className = 'ingredient-name';
@@ -656,7 +701,7 @@
                     infoButton.className = 'info-button';
                     infoButton.textContent = 'i';
                     
-                    ingredientElement.appendChild(emojiElement);
+                    ingredientElement.appendChild(imgElement);
                     ingredientElement.appendChild(nameElement);
                     ingredientElement.appendChild(infoButton);
                     ingredientsContainer.appendChild(ingredientElement);
@@ -676,7 +721,6 @@
                     
                     ingredientElement.addEventListener('touchmove', function(e) {
                         e.preventDefault();
-                        // Visual feedback only, no repositioning
                         ingredientElement.classList.add('touched');
                     });
                     
@@ -686,10 +730,14 @@
                         handleTouchDrop(e, ingredientElement._touchData.name);
                     });
                     
-                    // Info button event listener
+                    // Info button event listener with debounce
+                    let clickTimeout;
                     infoButton.addEventListener('click', function(e) {
-                        showIngredientInfo(e, ingredient);
-                        e.stopPropagation();
+                        clearTimeout(clickTimeout);
+                        clickTimeout = setTimeout(() => {
+                            showIngredientInfo(e, ingredient);
+                            e.stopPropagation();
+                        }, 100);
                     });
                 });
             }
@@ -765,35 +813,40 @@
                     bowlIngredients.forEach((ingredientName, index) => {
                         const ingredient = allIngredients.find(ing => ing.name === ingredientName);
                         if (ingredient) {
-                            const emojiElement = document.createElement('span');
-                            emojiElement.className = 'bowl-ingredient';
-                            emojiElement.textContent = ingredient.image;
-                            emojiElement.setAttribute('data-index', index);
-                            emojiElement.draggable = true;
+                            const imgElement = document.createElement('img');
+                            imgElement.className = 'bowl-ingredient';
+                            imgElement.src = ingredient.image;
+                            imgElement.alt = ingredient.name;
+                            imgElement.setAttribute('data-index', index);
+                            imgElement.draggable = true;
+                            imgElement.onerror = function() {
+                                this.src = 'placeholder.jpg';
+                                this.alt = 'Ingredient image not available';
+                            };
                             
-                            emojiElement.addEventListener('dragstart', function(e) {
+                            imgElement.addEventListener('dragstart', function(e) {
                                 e.dataTransfer.setData('text/plain', ingredient.name);
                                 e.dataTransfer.effectAllowed = 'move';
                             });
                             
-                            emojiElement.addEventListener('touchstart', function(e) {
+                            imgElement.addEventListener('touchstart', function(e) {
                                 e.preventDefault();
-                                emojiElement.classList.add('touched');
-                                emojiElement._touchData = { name: ingredient.name };
+                                imgElement.classList.add('touched');
+                                imgElement._touchData = { name: ingredient.name };
                             });
                             
-                            emojiElement.addEventListener('touchmove', function(e) {
+                            imgElement.addEventListener('touchmove', function(e) {
                                 e.preventDefault();
-                                emojiElement.classList.add('touched');
+                                imgElement.classList.add('touched');
                             });
                             
-                            emojiElement.addEventListener('touchend', function(e) {
+                            imgElement.addEventListener('touchend', function(e) {
                                 e.preventDefault();
-                                emojiElement.classList.remove('touched');
-                                handleTouchDrop(e, emojiElement._touchData.name);
+                                imgElement.classList.remove('touched');
+                                handleTouchDrop(e, imgElement._touchData.name);
                             });
                             
-                            bowlIngredientsContainer.appendChild(emojiElement);
+                            bowlIngredientsContainer.appendChild(imgElement);
                             
                             const listItem = document.createElement('li');
                             const textSpan = document.createElement('span');
@@ -843,7 +896,6 @@
                 
                 if (isCorrect) {
                     score += 10;
-                    console.log(`Score updated to: ${score}`); // Debug log
                     scoreElement.textContent = score;
                     resultElement.textContent = `Correct! You've made ${currentDish.name}!`;
                     resultElement.className = 'result correct';
@@ -881,6 +933,7 @@
                 hintDisplayElement.textContent = '';
                 removeAllHighlights();
                 populateIngredients();
+                ingredientInfo.style.display = 'none';
             }
             
             // Clear all ingredients from the bowl
@@ -907,10 +960,16 @@
                 const currentDish = singaporeFoods[currentDishIndex];
                 const requiredIngredients = currentDish.ingredients;
                 
+                // Get currently displayed ingredients
+                const displayedIngredients = Array.from(document.querySelectorAll('.ingredient')).map(el => el.getAttribute('data-name'));
+                
+                // Filter required ingredients that are currently displayed
+                const availableRequiredIngredients = requiredIngredients.filter(ing => displayedIngredients.includes(ing));
+                
                 removeAllHighlights();
                 
-                const numHints = Math.min(Math.floor(Math.random() * 2) + 2, requiredIngredients.length);
-                const shuffledIngredients = [...requiredIngredients].sort(() => Math.random() - 0.5);
+                const numHints = Math.min(Math.floor(Math.random() * 2) + 1, availableRequiredIngredients.length);
+                const shuffledIngredients = [...availableRequiredIngredients].sort(() => Math.random() - 0.5);
                 const hintsToShow = shuffledIngredients.slice(0, numHints);
                 
                 hintDisplayElement.textContent = `Hint: This dish contains ${hintsToShow.join(', ')}${numHints < requiredIngredients.length ? ' and other ingredients' : ''}.`;
@@ -942,7 +1001,7 @@
                     ingredient = allIngredients.find(ing => ing.name === ingredientName);
                 }
                 
-                if (ingredient) {
+                if (ingredient && ingredient.name && ingredient.description) {
                     infoName.textContent = ingredient.name;
                     infoDescription.textContent = ingredient.description;
                     ingredientInfo.style.display = 'block';
